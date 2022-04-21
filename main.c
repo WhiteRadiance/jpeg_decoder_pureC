@@ -10,12 +10,11 @@
 void active_JPEG_dec(char* path_dep, char* path_des, int fmt);
 
 
-//ÔÚcmdÖĞÊ¹ÓÃffmpeg´ò¿ªyuvÎÄ¼şÖ¸Áî: ffplay -f rawvideo -pixel_format yuv420p -s 1080*2340 xxx.yuv
+//åœ¨cmdä¸­ä½¿ç”¨ffmpegæ‰“å¼€yuvæ–‡ä»¶æŒ‡ä»¤: ffplay -f rawvideo -pixel_format yuv420p -s 1080*2340 xxx.yuv
 int main(int argc, char* argv[])
 {
 	char path1[100] = "C:\\Users\\93052\\Desktop\\SDcard\\PICTURE\\jpg\\wallpaper0.jpg";
 	char path2[100] = "C:\\Users\\93052\\Desktop\\SDcard\\PICTURE\\jpg\\wallpaper0.yuv";
-	//string	path_deprt = "D:\\±ßÖ¾Ææ\\ÑĞÒ»²ÎÈü\\ÖĞĞËÅõÔÂ2021\\data\\";
 
 	active_JPEG_dec(path1, path2, 444);
 
@@ -36,7 +35,7 @@ void active_JPEG_dec(char* path_dep, char* path_des, int fmt)
 		return;
 	}
 
-	//Ô¤¶ÁÈ¡Í¼Æ¬³ß´çºÍ²ÉÑù¸ñÊ½
+	//é¢„è¯»å–å›¾ç‰‡å°ºå¯¸å’Œé‡‡æ ·æ ¼å¼
 	u8 sample_t = 0;
 	u16 width = 0, height = 0;
 	rd_SOF0_2get_size(fp_rd, &sample_t, &width, &height);
@@ -46,12 +45,12 @@ void active_JPEG_dec(char* path_dep, char* path_des, int fmt)
 		return;
 	}
 
-	//¸ù¾İYUV¸ñÊ½ĞŞÕıU/VÆ½ÃæµÄ´óĞ¡
+	//æ ¹æ®YUVæ ¼å¼ä¿®æ­£U/Vå¹³é¢çš„å¤§å°
 	size_t uvplane_size = 0;
 	if (fmt != 444)		uvplane_size = (size_t)((height + 1) / 2) * ((width + 1) / 2);
-	else				uvplane_size = (size_t)height * width;
+	else			uvplane_size = (size_t)height * width;
 
-	//¿ª±ÙY/U/VµÄÄÚ´æ
+	//å¼€è¾ŸY/U/Vçš„å†…å­˜
 	u8* yuv_Y = (u8*)malloc(sizeof(u8) * width * height);
 	u8* yuv_U = (u8*)malloc(sizeof(u8) * uvplane_size);
 	u8* yuv_V = (u8*)malloc(sizeof(u8) * uvplane_size);
@@ -60,7 +59,7 @@ void active_JPEG_dec(char* path_dep, char* path_des, int fmt)
 		return;
 	}
 
-	//½âÂë
+	//è§£ç 
 	if (fmt != 444)
 		Dec_JPEG_to_YUV(fp_rd, yuv_Y, yuv_U, yuv_V, 1);
 	else
@@ -73,7 +72,7 @@ void active_JPEG_dec(char* path_dep, char* path_des, int fmt)
 		puts("444444");
 		return;
 	}
-	//Ğ´Èë
+	//å†™å…¥
 	fwrite(yuv_Y, (size_t)width * height, 1, fp_wr);
 	fwrite(yuv_U, (size_t)uvplane_size, 1, fp_wr);
 	fwrite(yuv_V, (size_t)uvplane_size, 1, fp_wr);
@@ -81,7 +80,7 @@ void active_JPEG_dec(char* path_dep, char* path_des, int fmt)
 	fclose(fp_wr);
 	fp_wr = NULL;
 
-	//ÊÍ·Å¿Õ¼ä
+	//é‡Šæ”¾ç©ºé—´
 	free(yuv_Y);
 	free(yuv_U);
 	free(yuv_V);
